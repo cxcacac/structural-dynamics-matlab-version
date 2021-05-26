@@ -1,4 +1,4 @@
-clear;
+clc;
 clf;
 m = 96.6;
 wavefile = char('elcentro_NS.dat');
