@@ -2,30 +2,17 @@ clc;
 clear;
 % clf;
 
-length = 220; % the length of cable is 220m;
+L = 220; % the length of cable is 220m;
 n = 5; % number of modes used to represent cable;
-dLocation = 4; % damper location is 4m;
-mass = 85; % Unit: kg/m;
-T = 7115*1e3; % Unit: KN;
+x_d = 4; % damper location is 4m;
+m = 85; % Unit: kg/m;
+T = 7115*1e3; % Unit: N;
 Diameter = 0.118; % Unit: m;
 angle = 22.5; % Unit: degrees;
+c = 0.05; % visous damping per unit;
 
-M = zeros(n);
-K = zeros(n);
+numberofModes = (1:n);
+w0 = sqrt(T/m).*(numberofModes)./(2*L);
 
-syms x;
-
-for i = 1:n
-    for j = 1:n
-        % using the dot (.) operator for element-wise multiplication (.*).
-        a = shapeFunction(x,i,dLocation,length);
-        b = shapeFunction(x,j,dLocation,length);
-        bb = diff(diff(b)).*a;
-        M(i,j) = mass.*int(a.*b,0, length);
-        K(i,j) = (-T).*int(bb, 0, length);
-    end
-end
-
-[mode, w2] = eig(K,M);
-w = diag(sqrt(w2));
+[K,M,C,modes,w] = getMatrix(L, x_d, m, n, T, c);
 
