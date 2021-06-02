@@ -28,4 +28,4 @@ end
 
 [modes, w2] = eig(K,M);
 
-w = diag(sqrt(w2))./(2*pi);
+f = diag(sqrt(w2))./(2*pi);
