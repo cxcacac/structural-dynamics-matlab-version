@@ -37,4 +37,4 @@ end
 [modes, w2] = eig(K, M);
 f = diag(sqrt(w2))./(2*pi); % check w == w0;
 
-C = (M*c)./m;
+C = (M.*c)./m;
