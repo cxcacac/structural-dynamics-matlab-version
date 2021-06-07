@@ -1,11 +1,10 @@
-function [x,v,a] = NewMarkBeta(M,K,C,F,dt,X0,phiD, choice)
+function [x,v,a] = NewMarkBeta_reference(M,K,C,F,dt,X0)
 % Variable Description :
 % INPUT :
 %       M - Mass Matrix (in modal coordinates)
 %       K - Stiffness Matrix (in modal coordinates)
 %       C - Damping Matrix (in modal coordinates)
 %       P - Force Matrix (in modal coordinates)
-%       phiD - matrix in damper.
 % OUTPUT :
 %        x - modal displacement's 
 %        v - modal velocities
@@ -34,8 +33,7 @@ K_ = K + a0*M + a1*C;
 iK = inv(K_);
 
 for i = 1:length(F)-1
-    DamperForce = getDamperForce(x(:,i),a(:,i),v(:,i),choice);
-    F_(:,i+1)=F(:,i+1) + DamperForce.*phiD + M*(a0*x(:,i)+a2*v(:,i)+a3*a(:,i))+C*(a1*x(:,i)+a4*v(:,i)+a5*a(:,i));
+    F_(:,i+1)=F(:,i+1)+M*(a0*x(:,i)+a2*v(:,i)+a3*a(:,i))+C*(a1*x(:,i)+a4*v(:,i)+a5*a(:,i));
     x(:,i+1)=iK*F_(:,i+1);
     a(:,i+1)=a0*(x(:,i+1)-x(:,i))-a2*v(:,i)-a3*a(:,i);
     v(:,i+1)=v(:,i)+a6*a(:,i)+a7*a(:,i+1);
