@@ -32,9 +32,8 @@ a(:,1) = X0(2*cn+1:3*cn);
 
 K_ = K + a0*M + a1*C;
 iK = inv(K_);
-
 for i = 1:length(F)-1
-    DamperForce = getDamperForce(x(:,i),a(:,i),v(:,i),choice);
+    DamperForce = getDamperForce(phiD'*x(:,i),phiD'*v(:,i),phiD'*a(:,i),choice);
     F_(:,i+1)=F(:,i+1) + DamperForce.*phiD + M*(a0*x(:,i)+a2*v(:,i)+a3*a(:,i))+C*(a1*x(:,i)+a4*v(:,i)+a5*a(:,i));
     x(:,i+1)=iK*F_(:,i+1);
     a(:,i+1)=a0*(x(:,i+1)-x(:,i))-a2*v(:,i)-a3*a(:,i);
