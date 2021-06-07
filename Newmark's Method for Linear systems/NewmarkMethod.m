@@ -30,7 +30,6 @@ function [depl,vel,accl,U,t] = NewmarkMethod(M,K,C,P,phi,sdof,acceleration)
 %        t - time values at which integration is done
 %--------------------------------------------------------------------------
 
-
 switch acceleration
     case 'Average' 
         gaama = 1/2 ;beta = 1/4 ;
@@ -64,7 +63,6 @@ P0 = zeros(n,1) ;
 accl(:,1) = M\(P-C*vel(:,1)-K*depl(:,1)) ;
 
 Kcap = K+a1*C+a2*M ;
-
 a = a3*M+a4*C ;
 b = a5*M+a6*C ;
 

@@ -21,7 +21,6 @@ function [M,K,C,P,phi]= ModalAnalysis(M,K,C,P,lambda)
 %           lambda - number of modes to be considered
 %           phi - Reduced Normal modes of the system
 %--------------------------------------------------------------------------
-
  % Modal Analysis 
 [V,D]=eig(K,M);
 [W,k]=sort(diag(D));

@@ -1,4 +1,4 @@
-function [K,M,C,modes,f] = getMatrix(L, x_d, m, n, T,c)
+function [K,M,C,modes,f] = getMatrix(L, x_d, m, n, T,cRatio)
 % calculate the stiffness matrix, mass matrix and damping matrix;
 % the script is based on Li's paper (2007,2008)
 % (1)Vibration control of stay cables of the shandong binzhou rivers;
@@ -35,6 +35,8 @@ for i = 1:n
 end
 
 [modes, w2] = eig(K, M);
-f = diag(sqrt(w2))./(2*pi); % check w == w0;
-
+omega = sqrt(w2);
+f = diag(omega)./(2*pi); % check w == w0;
+% from zhou's paper(2008), semi-active control....
+c = cRatio*2*omega(1)*m;
 C = (M.*c)./m;
