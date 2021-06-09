@@ -44,7 +44,7 @@ for i = 1:n
     phiE(i) = shapeFunction(ELocation, i, x_d, L);
 end
 
-B = [zeros(n,1); inv(M)*phiD];
+B = [zeros(n,1); M\phiD];
 D0 = [zeros(n); inv(M)];
 
 %% get load vector;
@@ -53,18 +53,21 @@ dt = 0.02;
 slots = length(t);
 f1 = 30*sin(2*pi*freq(2).*t); % second freq;
 f2 = 50*sin(2*pi*freq(1).*t); % first freq;
-F = zeros(n, slots);
+F1 = zeros(n, slots);
+F2 = zeros(n, slots);
 syms x;
 for i = 1:n
-    F(i,:) = int(shapeFunction(x,i,x_d, L),x,0, L).*f1;
+    F1(i,:) = int(shapeFunction(x,i,x_d, L),x,0, L).*f1;
+    F2(i,:) = int(shapeFunction(x,i,x_d, L),x,0, L).*f2;
 end
 u = 0; % control force
 X0 = zeros(3*n,1); % initial state;
 R = zeros(n,1); % wilson-seta parameters;
 
 %% use NewMark-beta method to solve equation;
-[x0,v0,a0] = NewMarkBeta(M,K,C,F,dt,X0,phiD, 'freeVibration');
-[x1,v1,a1] = NewMarkBeta(M,K,C,F,dt,X0,phiD, 'passive');
+[x0,v0,a0] = NewMarkBeta(M,K,C,F1,dt,X0,phiD, 'free-vibration');
+[x1,v1,a1] = NewMarkBeta(M,K,C,F1,dt,X0,phiD, 'passive');
+[x2,v2,a2] = NewMarkBeta(M,K,C,F1,dt,X0,phiD, 'semi-active');
 
 %% use Phi matrix to get cable response(Free Vibration)
 A_d0 = phiA'*x0; % displacement at point A(L/3)
@@ -98,13 +101,32 @@ C_v1 = phiC'*v1; % velocity at point C(2*L/3)
 D_v1 = phiD'*v1; % velocity at point Damper(x_d)
 E_v1 = phiE'*v1; % velocity at point Excitation(L/6)
 
-A_a1 = phiA'*a1; % veloctiy at point A(L/3)
-B_a1 = phiB'*a1; % velocity at point B(L/2)
-C_a1 = phiC'*a1; % velocity at point C(2*L/3)
-D_a1 = phiD'*a1; % velocity at point Damper(x_d)
-E_a1 = phiE'*a1; % velocity at point Excitation(L/6)
+A_a1 = phiA'*a1; % acceleration at point A(L/3)
+B_a1 = phiB'*a1; % acceleration at point B(L/2)
+C_a1 = phiC'*a1; % acceleration at point C(2*L/3)
+D_a1 = phiD'*a1; % acceleration at point Damper(x_d)
+E_a1 = phiE'*a1; % acceleration at point Excitation(L/6)
+
+%% use Phi matrix to get cable response(Passive Controlled Vibration)
+A_d2 = phiA'*x2; % displacement at point A(L/3)
+B_d2 = phiB'*x2; % displacement at point B(L/2)
+C_d2 = phiC'*x2; % displacement at point C(2*L/3)
+D_d2 = phiD'*x2; % displacement at point Damper(x_d)
+E_d2= phiE'*x2; % displacement at point Excitation(L/6)
+
+A_v2 = phiA'*v2; % veloctiy at point A(L/3)
+B_v2 = phiB'*v2; % velocity at point B(L/2)
+C_v2 = phiC'*v2; % velocity at point C(2*L/3)
+D_v2 = phiD'*v2; % velocity at point Damper(x_d)
+E_v2 = phiE'*v2; % velocity at point Excitation(L/6)
+
+A_a2 = phiA'*a2; % acceleration at point A(L/3)
+B_a2 = phiB'*a2; % acceleration at point B(L/2)
+C_a2 = phiC'*a2; % acceleration at point C(2*L/3)
+D_a2 = phiD'*a2; % acceleration at point Damper(x_d)
+E_a2 = phiE'*a2; % acceleration at point Excitation(L/6)
 
 %% make graph
 % B_d1 = zeros(size(B_d0));
 figure(1);
-plot(t,B_d0,t, B_d1);
+plot(t,B_d0,'b-', t,B_d1, 'k:', t, B_d2, 'r-');
