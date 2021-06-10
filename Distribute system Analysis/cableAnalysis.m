@@ -47,22 +47,17 @@ end
 B = [zeros(n,1); M\phiD];
 D0 = [zeros(n); inv(M)];
 
-%% get load vector;
+%% initial state
+X0 = zeros(3*n,1); 
+
+%% load and load vector
 t = (0:0.02:50);
 dt = 0.02;
 slots = length(t);
 f1 = 30*sin(2*pi*freq(2).*t); % second freq;
 f2 = 50*sin(2*pi*freq(1).*t); % first freq;
-F1 = zeros(n, slots);
-F2 = zeros(n, slots);
-syms x;
-for i = 1:n
-    F1(i,:) = int(shapeFunction(x,i,x_d, L),x,0, L).*f1;
-    F2(i,:) = int(shapeFunction(x,i,x_d, L),x,0, L).*f2;
-end
-u = 0; % control force
-X0 = zeros(3*n,1); % initial state;
-R = zeros(n,1); % wilson-seta parameters;
+F1 = getLoadVector(f1, n, slots, x_d, L);
+F2 = getLoadVector(f2, n, slots, x_d, L);
 
 %% use NewMark-beta method to solve equation;
 [x0,v0,a0] = NewMarkBeta(M,K,C,F1,dt,X0,phiD, 'free-vibration');
