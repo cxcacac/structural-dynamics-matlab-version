@@ -18,7 +18,7 @@ n = length(F); % number of dt;
 % when beta = 1/6, it is linear acceleration;
 % when beta >= 1/4, it is unconditional stable;
 beta = 1/4;
-gamma = 1/2; 
+gamma = 1/2;
 a0=1/beta/dt^2; a1=gamma/beta/dt; a2=1/beta/dt; a3=1/2/beta-1;
 a4=gamma/beta-1; a5=dt*(gamma/beta-2)/2; a6=dt*(1-gamma); a7=gamma*dt;
 
@@ -38,4 +38,3 @@ for i = 1:length(F)-1
     x(:,i+1)=iK*F_(:,i+1);
     a(:,i+1)=a0*(x(:,i+1)-x(:,i))-a2*v(:,i)-a3*a(:,i);
     v(:,i+1)=v(:,i)+a6*a(:,i)+a7*a(:,i+1);
-end
